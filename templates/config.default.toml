@@ -1,0 +1,21 @@
+[model]
+base_url = "https://api.openai.com/v1"
+api_key = ""
+api_key_env = "OPENAI_API_KEY"
+reasoning_effort = ""
+reasoning_effort_env = "OPENAI_REASONING_EFFORT"
+model = "gpt-5.4"
+timeout_ms = 300000
+
+[rollup]
+rounds = 5
+max_backfill_rounds = 100
+max_input_chars = 30000
+max_injected_chars = 8000
+precompact_timeout_ms = 300000
+
+[prompts]
+rollup = "~/.codex/micat/prompts/rollup.md"
+
+[storage]
+root = "~/.codex/micat"

@@ -1,0 +1,6 @@
+{
+  "name": "micat",
+  "version": "0.1.0",
+  "description": "Lightweight memory plugin for Codex sessions.",
+  "hooks": "./hooks/hooks.json"
+}

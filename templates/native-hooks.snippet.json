@@ -1,0 +1,23 @@
+{
+  "SessionStart": [
+    {
+      "matcher": "startup|resume|compact",
+      "hooks": [{ "type": "command", "command": "node /absolute/path/to/Micat/dist/src/bin/micat.mjs hook" }]
+    }
+  ],
+  "UserPromptSubmit": [
+    {
+      "hooks": [{ "type": "command", "command": "node /absolute/path/to/Micat/dist/src/bin/micat.mjs hook" }]
+    }
+  ],
+  "Stop": [
+    {
+      "hooks": [{ "type": "command", "command": "node /absolute/path/to/Micat/dist/src/bin/micat.mjs hook" }]
+    }
+  ],
+  "PreCompact": [
+    {
+      "hooks": [{ "type": "command", "command": "node /absolute/path/to/Micat/dist/src/bin/micat.mjs hook", "timeout": 30 }]
+    }
+  ]
+}

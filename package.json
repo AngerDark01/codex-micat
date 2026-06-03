@@ -1,0 +1,37 @@
+{
+  "name": "@angerdeep/micat",
+  "version": "0.1.0",
+  "description": "Lightweight memory plugin for Codex sessions.",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AngerDark01/codex-micat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AngerDark01/codex-micat/issues"
+  },
+  "homepage": "https://github.com/AngerDark01/codex-micat#readme",
+  "bin": {
+    "micat": "dist/src/bin/micat.mjs"
+  },
+  "files": [
+    "dist/src/",
+    "hooks/",
+    "prompts/",
+    "templates/",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc && node scripts/rename-bin.mjs",
+    "test": "npm run build && node --test dist/tests/*.test.js",
+    "doctor": "node dist/src/bin/micat.mjs doctor",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.0",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

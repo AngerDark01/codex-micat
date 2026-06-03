@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.omx/
+
+*.log
+*.tgz
+.env
+.env.*
+npm_recovery_codes.txt
+
