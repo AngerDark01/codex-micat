@@ -1,9 +1,12 @@
 import { createInterface } from "node:readline/promises";
 import { stdin as defaultInput, stdout as defaultOutput } from "node:process";
+import { mkdir, stat } from "node:fs/promises";
+import { dirname } from "node:path";
 import { loadConfig, defaultConfigPath } from "./load-config.js";
 import type { MicatConfig } from "./defaults.js";
 import { atomicWriteFile } from "../fs/atomic-write.js";
 import { expandHome } from "../fs/paths.js";
+import { readBundledRollupPrompt } from "../prompts/default-rollup.js";
 
 const VALID_REASONING_EFFORTS = new Set(["", "none", "minimal", "low", "medium", "high", "xhigh"]);
 
@@ -50,7 +53,7 @@ export async function runConfigWizard(options: {
       throw new Error("Invalid reasoning effort. Use empty, none, minimal, low, medium, high, or xhigh.");
     }
 
-    return writeConfigFile({
+    const report = await writeConfigFile({
       configPath: options.configPath,
       config: {
         base_url: baseUrl.trim(),
@@ -67,9 +70,25 @@ export async function runConfigWizard(options: {
         storage_root: current.storage.root,
       },
     });
+    await ensureDefaultPromptFile(current.prompts.rollup);
+    return report;
   } finally {
     if ("close" in ask && typeof ask.close === "function") ask.close();
   }
+}
+
+export async function ensureDefaultPromptFile(promptPath: string): Promise<boolean> {
+  const path = expandHome(promptPath);
+  try {
+    await stat(path);
+    return false;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+  }
+
+  await mkdir(dirname(path), { recursive: true });
+  await atomicWriteFile(path, await readBundledRollupPrompt());
+  return true;
 }
 
 export async function writeConfigFile(options: {

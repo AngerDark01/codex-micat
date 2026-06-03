@@ -1,10 +1,10 @@
-import { mkdtemp, readFile, stat } from "node:fs/promises";
+import { mkdtemp, readFile, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { loadConfig } from "../src/config/load-config.js";
-import { writeConfigFile } from "../src/config/configure.js";
+import { ensureDefaultPromptFile, writeConfigFile } from "../src/config/configure.js";
 
 test("writeConfigFile writes toml config with direct api key and reasoning effort", async () => {
   const root = await mkdtemp(join(tmpdir(), "micat-config-test-"));
@@ -40,4 +40,16 @@ test("writeConfigFile writes toml config with direct api key and reasoning effor
   assert.equal(loaded.model.api_key, "configured-key");
   assert.equal(loaded.model.reasoning_effort, "high");
   assert.equal(report.has_api_key, true);
+});
+
+test("ensureDefaultPromptFile installs bundled prompt without overwriting edits", async () => {
+  const root = await mkdtemp(join(tmpdir(), "micat-prompt-test-"));
+  const promptPath = join(root, "prompts", "rollup.md");
+
+  assert.equal(await ensureDefaultPromptFile(promptPath), true);
+  assert.match(await readFile(promptPath, "utf8"), /Micat Rollup Prompt/);
+
+  await writeFile(promptPath, "custom prompt\n");
+  assert.equal(await ensureDefaultPromptFile(promptPath), false);
+  assert.equal(await readFile(promptPath, "utf8"), "custom prompt\n");
 });

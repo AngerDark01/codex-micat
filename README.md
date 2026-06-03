@@ -422,6 +422,8 @@ micat uninstall-native-hooks
 ~/.codex/micat/prompts/rollup.md
 ```
 
+Micat 的 npm 包内置了默认 prompt：`prompts/rollup.default.md`。运行 `micat init` 或 `micat config` 时，如果本地还没有 `rollup.md`，Micat 会自动把内置 prompt 写入这个默认路径。运行时如果本地 prompt 缺失，也会回退读取包内置 prompt。
+
 你可以直接编辑这个文件，也可以在 Web 管理台的 `Prompt` 页面编辑。
 
 Prompt 的目标是让小模型判断：
