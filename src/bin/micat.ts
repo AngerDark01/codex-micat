@@ -6,6 +6,7 @@ import { runConfigWizard } from "../config/configure.js";
 import { loadConfig } from "../config/load-config.js";
 import { runDoctor } from "../doctor/doctor.js";
 import { dispatchHook } from "../hook/dispatch.js";
+import { logFallbackHookError } from "../hook/error-log.js";
 import { installNativeHooks, uninstallNativeHooks } from "../native-hooks/install.js";
 import { runAllPendingRollups } from "../rollup/runner.js";
 import { SessionStore } from "../session/store.js";
@@ -25,10 +26,7 @@ async function main(): Promise<void> {
   const entryPath = fileURLToPath(import.meta.url);
 
   if (command === "hook") {
-    const input = await readStdin();
-    const payload = JSON.parse(input || "{}") as CodexHookPayload;
-    const output = await dispatchHook(payload);
-    if (output) process.stdout.write(`${JSON.stringify(output)}\n`);
+    await runHookCommand();
     return;
   }
 
@@ -154,6 +152,31 @@ async function main(): Promise<void> {
     "  micat context <session_id>",
     "  micat inspect-session <session_id>",
   ].join("\n") + "\n");
+}
+
+async function runHookCommand(): Promise<void> {
+  const input = await readStdin();
+  let payload: CodexHookPayload;
+  try {
+    const parsed = JSON.parse(input || "{}") as unknown;
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      throw new Error("Codex hook payload must be a JSON object.");
+    }
+    payload = parsed as CodexHookPayload;
+  } catch (error) {
+    await logFallbackHookError(error, "hook-payload-parse", {
+      raw_input: input.slice(0, 2000),
+      raw_input_length: input.length,
+    });
+    return;
+  }
+
+  try {
+    const output = await dispatchHook(payload);
+    if (output) process.stdout.write(`${JSON.stringify(output)}\n`);
+  } catch (error) {
+    await logFallbackHookError(error, "hook-command", payload);
+  }
 }
 
 function readArg(args: string[], name: string): string | null {
