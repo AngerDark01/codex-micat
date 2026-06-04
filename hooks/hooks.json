@@ -37,7 +37,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/dist/src/bin/micat.mjs\" hook",
-            "timeout": 30
+            "timeout": 300
           }
         ]
       }

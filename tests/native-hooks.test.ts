@@ -39,12 +39,13 @@ test("native hook installer merges and removes Micat hooks", async () => {
 
   const file = JSON.parse(await readFile(hooksPath, "utf8")) as {
     state: unknown;
-    hooks: Record<string, Array<{ hooks: Array<{ command: string }> }>>;
+    hooks: Record<string, Array<{ hooks: Array<{ command: string; timeout?: number }> }>>;
   };
   assert.deepEqual(file.state, { keep: true });
   assert.equal(file.hooks.Stop.length, 2);
   assert.equal(file.hooks.SessionStart.length, 1);
   assert.match(file.hooks.SessionStart[0].hooks[0].command, /micat\.mjs"? hook/);
+  assert.equal(file.hooks.PreCompact[0].hooks[0].timeout, 300);
   const config = await readFile(codexConfigPath, "utf8");
   assert.match(config, /Micat-owned Codex hook trust state/);
   assert.match(config, /\[hooks\.state\.".*hooks\.json:session_start:0:0"\]/);

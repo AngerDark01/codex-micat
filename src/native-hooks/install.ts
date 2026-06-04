@@ -6,6 +6,7 @@ import { atomicWriteJson } from "../fs/atomic-write.js";
 import { codexHome } from "../fs/paths.js";
 
 const MICAT_STATUS = "Micat session memory";
+const PRECOMPACT_HOOK_TIMEOUT_SECONDS = 300;
 const MICAT_TRUST_BLOCK_START = "# Micat-owned Codex hook trust state";
 const MICAT_TRUST_BLOCK_END = "# End Micat-owned Codex hook trust state";
 const EVENT_KEY_LABELS: Record<string, string> = {
@@ -192,7 +193,7 @@ function buildMicatGroups(command: string): Record<string, HookGroup> {
       hooks: [{ type: "command", command, statusMessage: MICAT_STATUS }],
     },
     PreCompact: {
-      hooks: [{ type: "command", command, timeout: 30, statusMessage: MICAT_STATUS }],
+      hooks: [{ type: "command", command, timeout: PRECOMPACT_HOOK_TIMEOUT_SECONDS, statusMessage: MICAT_STATUS }],
     },
   };
 }

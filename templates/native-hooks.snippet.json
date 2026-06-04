@@ -17,7 +17,7 @@
   ],
   "PreCompact": [
     {
-      "hooks": [{ "type": "command", "command": "node /absolute/path/to/Micat/dist/src/bin/micat.mjs hook", "timeout": 30 }]
+      "hooks": [{ "type": "command", "command": "node /absolute/path/to/Micat/dist/src/bin/micat.mjs hook", "timeout": 300 }]
     }
   ]
 }
