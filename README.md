@@ -493,6 +493,30 @@ micat install
 micat doctor
 ```
 
+### Codex 显示 `SessionStart hook failed` 或 `UserPromptSubmit hook failed`
+
+先检查 hook 是否指向当前安装的 Micat：
+
+```bash
+micat doctor
+cat ~/.codex/hooks.json
+```
+
+正常情况下，`hook.command` 应该是一个真实存在的绝对路径，而不是 `${PLUGIN_ROOT}`，也不是另一台机器或旧源码目录里的路径。
+
+如果路径不对，重新安装 hooks：
+
+```bash
+micat init
+micat doctor
+```
+
+`0.1.2` 之后，Micat hook 自身会尽量避免让 Codex 报红；入口层错误会写入：
+
+```text
+~/.codex/micat/hook-errors.jsonl
+```
+
 ### Web 页面打不开
 
 先确认服务是否启动：
